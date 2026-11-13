@@ -20,14 +20,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.OutlinedTextField
+import com.example.modulnavcompose_245150200111026muhammadramadhikaesanof.Routes
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
     onStudentClick: (Int) -> Unit,
     onRetry: () -> Unit,
-    onSearchQueryChange: (String) -> Unit,
-    onSearch: () -> Unit,
+    onRefresh: () -> Unit,
     onOpenProfile: () -> Unit,
     onOpenAbout: () -> Unit
 ) {
@@ -47,21 +49,18 @@ fun HomeScreen(
         }
 
         OutlinedTextField(
-            value = uiState.searchQuery,
+            value = searchQuery,
             onValueChange = onSearchQueryChange,
             label = { Text("Cari profil") },
-            placeholder = { Text("Masukkan nama") },
-            singleLine = true,
-            enabled = !uiState.isLoading,
             modifier = Modifier.fillMaxWidth()
         )
 
         Button(
-            onClick = onSearch,
+            onClick = onRefresh,
             enabled = !uiState.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Cari")
+            Text("Refresh")
         }
 
         when {

@@ -6,49 +6,10 @@ import com.example.modulnavcompose_245150200111026muhammadramadhikaesanof.data.r
 class DefaultStudentRepository(
     private val remoteDataSource: StudentRemoteDataSource
 ) : StudentRepository {
-    override fun getStudents(
-        callback: (Result<List<Student>>) -> Unit
-    ) {
-        remoteDataSource.getStudents { result ->
-            callback(result.map { users -> users.map { it.toStudent() } })
-        }
-    }
-    override fun getStudent(
-        id: Int,
-        callback: (Result<Student>) -> Unit
-    ) {
-        remoteDataSource.getStudent(id) { result ->
-            callback(result.map { it.toStudent() })
-        }
-    }
-    override fun searchStudents(
-        query: String,
-        callback: (Result<List<Student>>) -> Unit
-    ) {
-        val normalizedQuery = query
-            .trim()
-            .replace(Regex("\\s+"), " ")
-
-        val keywords = normalizedQuery.split(" ")
-        val apiQuery = keywords.first()
-
-        remoteDataSource.searchStudents(apiQuery) { result ->
-            callback(
-                result.map { users ->
-                    val students = users.map { it.toStudent() }
-
-                    if (keywords.size == 1) {
-                        students
-                    } else {
-                        students.filter { student ->
-                            student.name.contains(
-                                normalizedQuery,
-                                ignoreCase = true
-                            )
-                        }
-                    }
-                }
-            )
-        }
-    }
+    override suspend fun getStudents(): List<Student> =
+        remoteDataSource.getStudents().map { it.toStudent() }
+    override suspend fun getStudent(id: Int): Student =
+        remoteDataSource.getStudent(id).toStudent()
+    override suspend fun searchStudents(query: String): List<Student> =
+        remoteDataSource.searchStudents(query).map { it.toStudent() }
 }
